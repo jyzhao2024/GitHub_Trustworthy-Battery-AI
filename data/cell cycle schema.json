@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0.0",
+  "schema_name": "battery_cycling_data",
+  "description": "Schema for time-series battery cycling data used in state estimation tasks",
+  "last_updated": "2025-11-12",
+  "fields": [
+    {
+      "name": "cycle_index",
+      "type": "integer",
+      "description": "Sequential cycle number starting from 1",
+      "required": true,
+      "constraints": {
+        "min": 1
+      }
+    },
+    {
+      "name": "timestamp",
+      "type": "float",
+      "description": "Relative time from start of cycling in seconds",
+      "required": true,
+      "unit": "seconds",
+      "constraints": {
+        "min": 0
+      }
+    },
+    {
+      "name": "voltage",
+      "type": "float",
+      "description": "Terminal voltage of the battery",
+      "required": true,
+      "unit": "V",
+      "constraints": {
+        "min": 2.0,
+        "max": 4.5
+      }
+    },
+    {
+      "name": "current",
+      "type": "float",
+      "description": "Charge/discharge current (positive for charge, negative for discharge)",
+      "required": true,
+      "unit": "A",
+      "constraints": {
+        "min": -10.0,
+        "max": 10.0
+      }
+    },
+    {
+      "name": "temperature",
+      "type": "float",
+      "description": "Battery surface or ambient temperature",
+      "required": true,
+      "unit": "°C",
+      "constraints": {
+        "min": -20.0,
+        "max": 80.0
+      }
+    },
+    {
+      "name": "capacity",
+      "type": "float",
+      "description": "Measured discharge capacity for the cycle",
+      "required": true,
+      "unit": "Ah",
+      "constraints": {
+        "min": 0.0
+      }
+    },
+
+    {
+      "name": "charge_type",
+      "type": "string",
+      "description": "Type of charge/discharge operation",
+      "required": false,
+      "allowed_values": ["CC_charge", "CV_charge", "CC_discharge", "rest"]
+    }
+  ],
+  "data_quality": {
+    "missing_value_handling": "Linear interpolation for short gaps (<5 points), discard cycles with >10% missing data",
+    "outlier_detection": "Remove measurements outside 3 sigma from moving average",
+    "sampling_rate": "Recommended: 1 Hz minimum, 10 Hz preferred"
+  },
+  "usage_notes": [
+    "Each row represents aggregate measurements for one complete cycle",
+    "For time-series within-cycle data, use higher temporal resolution",
+    "Ensure voltage/current signs follow convention: discharge current is negative"
+  ],
+  "example_file": "examples/sample_cycles.csv"
+}
